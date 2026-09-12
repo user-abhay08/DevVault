@@ -23,6 +23,7 @@ function Register() {
 
         try {
 
+            // 1. Create account
             await api.post(
                 "/auth/register",
                 {
@@ -32,7 +33,23 @@ function Register() {
                 }
             );
 
-            navigate("/", {
+            // 2. Automatically login
+            const loginResponse = await api.post(
+                "/auth/login",
+                {
+                    email,
+                    password
+                }
+            );
+
+            // 3. Save JWT
+            localStorage.setItem(
+                "token",
+                loginResponse.data.token
+            );
+
+            // 4. Go directly to dashboard
+            navigate("/dashboard", {
                 replace: true
             });
 
