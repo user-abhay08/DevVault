@@ -79,6 +79,94 @@ const getReadme = async (owner,repo)=>{
     };
 };
 
+const getRepositoryFiles = async (owner, repo) => {
+    const response = await githubApi.get(
+        `/repos/${owner}/${repo}/git/trees/HEAD?recursive=1`
+    );
+
+    const ignoredDirectories = [
+        "node_modules/",
+        ".git/",
+        "dist/",
+        "build/",
+        "coverage/",
+        ".next/",
+        "vendor/"
+    ];
+
+    const allowedExtensions = [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".py",
+        ".java",
+        ".cpp",
+        ".c",
+        ".h",
+        ".html",
+        ".css",
+        ".sql"
+    ];
+
+    const files = response.data.tree
+        .filter(item => item.type === "blob")
+        .filter(item =>
+            !ignoredDirectories.some(directory =>
+                item.path.startsWith(directory)
+            )
+        )
+        .filter(item =>
+            allowedExtensions.some(extension =>
+                item.path.toLowerCase().endsWith(extension)
+            )
+        );
+
+    return files.map(file => ({
+        path: file.path,
+        sha: file.sha,
+        size: file.size
+    }));
+};
+
+const getFileContent = async (owner, repo, path) => {
+    console.log("GitHub file path:", path);
+
+    const response = await githubApi.get(
+        `/repos/${owner}/${repo}/contents/${(path)}`
+    );
+
+    if (response.data.type !== "file") {
+        throw new Error(`Path is not a file: ${path}`);
+    }
+
+    return Buffer
+        .from(response.data.content, "base64")
+        .toString("utf-8");
+};
+
+const selectReviewFiles = (files) => {
+    const priorityFiles = [
+        "server.js",
+        "app.js",
+        "index.js",
+        "routes/",
+        "controllers/",
+        "services/",
+        "models/",
+        "middleware/"
+    ];
+
+    return files
+        .filter(file =>
+            priorityFiles.some(priority =>
+                file.path === priority ||
+                file.path.startsWith(priority)
+            )
+        )
+        .slice(0, 15);
+};
+
 
 module.exports = {
     getRepository,
@@ -86,5 +174,7 @@ module.exports = {
     getCommits,
     getContributors,
     getReadme,
-    parseGithubUrl
+    parseGithubUrl,
+    getRepositoryFiles,
+    getFileContent
 };

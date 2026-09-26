@@ -1,8 +1,12 @@
 const express = require('express');
-
+const authMiddleware  = require("../middleware/auth.middleware");
+const db = require("../config/db");
 const authenticateToken = require('../middleware/auth.middleware');
 
-const { generateAIResponse, analyzeProject 
+const { 
+    generateAIResponse, 
+    analyzeProject,
+    reviewProjectCode
 } = require('../services/ai.service');
 
 const pool = require("../config/db");
@@ -13,7 +17,9 @@ const {
     getCommits,
     getContributors,
     getReadme,
-    parseGithubUrl
+    parseGithubUrl,
+    getRepositoryFiles,
+    getFileContent
 } = require("../services/github.service");
 
 const router = express.Router();
@@ -150,12 +156,82 @@ router.get("/project/:id/analysis/status", authenticateToken, async(req,res) =>{
     }
 });
 
+router.get("/project/:id/code-review", authMiddleware, async (req, res) => {
+    try {
+
+        const projectId = req.params.id;
+        const userId = req.user.userId;
+
+        const [projects] = await db.query(
+            "SELECT id FROM projects WHERE id = ? AND user_id = ?",
+            [projectId, userId]
+        );
+
+        if (projects.length === 0) {
+            return res.status(404).json({
+                message: "Project not found"
+            });
+        }
+
+
+        const [reviews] = await db.query(
+            "SELECT * FROM code_reviews WHERE project_id = ?",
+            [projectId]
+        );
+
+        if (reviews.length === 0) {
+            return res.status(404).json({
+                message: "Code review not found"
+            });
+        }
+
+        const review = reviews[0];
+
+        const parseJSONField = (value) => {
+            if (!value) {
+                return [];
+            }
+
+            if (typeof value === "string") {
+                return JSON.parse(value);
+            }
+
+            return value;
+        };
+
+        res.json({
+            projectId: review.project_id,
+            overallScore: review.overall_score,
+            summary: review.summary,
+            codeQuality: parseJSONField(review.code_quality),
+            bugs: parseJSONField(review.bugs),
+            security: parseJSONField(review.security),
+            performance: parseJSONField(review.performance),
+            maintainability: parseJSONField(review.maintainability),
+            recommendations: parseJSONField(review.recommendations),
+            reviewedFiles: parseJSONField(review.reviewed_files),
+            reviewedAt: review.reviewed_at,
+            updatedAt: review.updated_at
+        });
+
+    } catch (error) {
+        console.error(
+            "Get code review error:",
+            error.message
+        );
+
+        res.status(500).json({
+            message: "Failed to fetch code review"
+        });
+    }
+});
+
+
 // POST ROUTE
 router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
     
     try {
         const startTime = Date.now();
-        console.log("1. Starting AI analysis");
 
         const projectId = req.params.id;
         const userId = req.user.userId;
@@ -166,8 +242,6 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
             [projectId, userId]
         );
 
-        console.log("2. Database project query completed");
-
         if (projects.length === 0) {
             return res.status(404).json({
                 message: "Project not found"
@@ -176,8 +250,6 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
 
         const project = projects[0];
 
-        console.log("3. Project found:", project.title);
-        console.log("GitHub URL:", project.github_url);
 
         if (!project.github_url) {
             return res.status(400).json({
@@ -187,10 +259,8 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
 
         const { owner, repo } = parseGithubUrl(project.github_url);
 
-        console.log("4. GitHub repo:", owner, repo);
 
         const repository = await getRepository(owner, repo);
-        console.log("5. Repository fetched");
 
         const [languages, commits, contributors, readme] = await Promise.all([
             getLanguages(owner, repo),
@@ -199,7 +269,6 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
             getReadme(owner, repo)
         ]);
 
-        console.log("6. Languages, commits, contributors and README fetched");
 
         const projectData = {
             projectName: project.title,
@@ -213,8 +282,6 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
             contributors: contributors.slice(0, 10)
         };
 
-        console.log("10. Project data prepared");
-        console.log("11. Sending data to Gemini");
 
         const analysis = await analyzeProject(projectData);
         const [existingUsers] = await pool.query(
@@ -278,7 +345,6 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
         ){
             throw new Error("Invalid project score");
         }
-        console.log("12. Gemini response received");
 
         console.log(
             "TOTAL AI ANALYSIS TIME:",
@@ -300,5 +366,163 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
         });
     }
 });
+
+router.post("/project/:id/code-review", authMiddleware, async (req, res) => {
+    try {
+
+       const projectId = req.params.id;
+        const userId = req.user.userId;
+
+        const [projects] = await db.query(
+            "SELECT * FROM projects WHERE id = ? AND user_id = ?",
+            [projectId, userId]
+        );
+
+
+        if (projects.length === 0) {
+            return res.status(404).json({
+                message: "Project not found"
+            });
+        }
+
+        const project = projects[0];
+
+
+        const { owner, repo } = parseGithubUrl(project.github_url);
+
+        const repositoryFiles = await getRepositoryFiles(owner, repo);
+
+
+        const selectedFiles = repositoryFiles
+            .filter(file => file.size && file.size < 100000)
+            .slice(0, 15);
+
+
+        const filesWithContent = [];
+
+        for (const file of selectedFiles) {
+
+            try {
+                const content = await getFileContent(
+                    owner,
+                    repo,
+                    file.path
+                );
+
+                filesWithContent.push({
+                    path: file.path,
+                    content
+                });
+            } catch (error) {
+                console.log(
+                    "7. Skipping file:",
+                    file.path
+                );
+            }
+        }
+
+        const review = await reviewProjectCode(filesWithContent);
+
+
+        if (
+            typeof review.overallScore !== "number" ||
+            review.overallScore < 0 ||
+            review.overallScore > 100
+        ) {
+            throw new Error("Invalid AI review score");
+        }
+
+
+        const [existingReview] = await db.query(
+            "SELECT id FROM code_reviews WHERE project_id = ?",
+            [projectId]
+        );
+
+        if (existingReview.length > 0) {
+            console.log("11. Updating existing code review");
+
+            await db.query(
+                `
+                UPDATE code_reviews
+                SET
+                    overall_score = ?,
+                    summary = ?,
+                    code_quality = ?,
+                    bugs = ?,
+                    security = ?,
+                    performance = ?,
+                    maintainability = ?,
+                    recommendations = ?,
+                    reviewed_files = ?
+                WHERE project_id = ?
+                `,
+                [
+                    review.overallScore,
+                    review.summary,
+                    JSON.stringify(review.codeQuality),
+                    JSON.stringify(review.bugs),
+                    JSON.stringify(review.security),
+                    JSON.stringify(review.performance),
+                    JSON.stringify(review.maintainability),
+                    JSON.stringify(review.recommendations),
+                    JSON.stringify(
+                        filesWithContent.map(file => file.path)
+                    ),
+                    projectId
+                ]
+            );
+        } else {
+
+            await db.query(
+                `
+                INSERT INTO code_reviews
+                (
+                    project_id,
+                    overall_score,
+                    summary,
+                    code_quality,
+                    bugs,
+                    security,
+                    performance,
+                    maintainability,
+                    recommendations,
+                    reviewed_files
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `,
+                [
+                    projectId,
+                    review.overallScore,
+                    review.summary,
+                    JSON.stringify(review.codeQuality),
+                    JSON.stringify(review.bugs),
+                    JSON.stringify(review.security),
+                    JSON.stringify(review.performance),
+                    JSON.stringify(review.maintainability),
+                    JSON.stringify(review.recommendations),
+                    JSON.stringify(
+                        filesWithContent.map(file => file.path)
+                    )
+                ]
+            );
+        }
+
+        res.json({
+            message: "Code review generated successfully",
+            review
+        });
+
+    } catch (error) {
+        console.error(
+            "Code review error:",
+            error.response?.data || error.message
+        );
+
+        res.status(500).json({
+            message: "Failed to generate code review"
+        });
+    }
+});
+
 
 module.exports = router;

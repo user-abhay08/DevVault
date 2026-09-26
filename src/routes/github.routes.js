@@ -5,7 +5,9 @@ const {
     getCommits,
     getContributors,
     getReadme,
-    parseGithubUrl
+    parseGithubUrl,
+    getRepositoryFiles,
+    getFileContent
     } = require("../services/github.service");
 const authenticateToken = require("../middleware/auth.middleware");
 const pool = require("../config/db");
@@ -317,4 +319,6 @@ router.get("/repo/:owner/:repo/readme", authenticateToken, async(req,res)=>{
     }
 });
 
-module.exports = router;
+
+
+ module.exports = router;

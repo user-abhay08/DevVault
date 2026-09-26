@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function Login() {
@@ -7,13 +7,13 @@ function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (event) => {
+        event.preventDefault();
 
-        setMessage("");
+        setError("");
         setLoading(true);
 
         try {
@@ -24,10 +24,17 @@ function Login() {
 
             localStorage.setItem("token", response.data.token);
 
-            navigate("/dashboard");
+            navigate("/dashboard", {
+                replace: true
+            });
 
         } catch (error) {
-            setMessage(
+    console.error("LOGIN ERROR:", error);
+    console.error("STATUS:", error.response?.status);
+    console.error("DATA:", error.response?.data);
+    console.error("MESSAGE:", error.message);
+
+            setError(
                 error.response?.data?.message ||
                 "Login failed"
             );
@@ -43,7 +50,7 @@ function Login() {
 
                 <h1>DevVault AI</h1>
 
-                <p className="subtitle">
+                <p className="auth-subtitle">
                     AI-powered developer project intelligence
                 </p>
 
@@ -53,7 +60,9 @@ function Login() {
                         type="email"
                         placeholder="Email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(event) =>
+                            setEmail(event.target.value)
+                        }
                         required
                     />
 
@@ -61,21 +70,26 @@ function Login() {
                         type="password"
                         placeholder="Password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(event) =>
+                            setPassword(event.target.value)
+                        }
                         required
                     />
 
-                    <button type="submit" disabled={loading}>
+                    {error && (
+                        <p className="error-message">
+                            {error}
+                        </p>
+                    )}
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                    >
                         {loading ? "Logging in..." : "Login"}
                     </button>
 
                 </form>
-
-                {message && (
-                    <p className="error">
-                        {message}
-                    </p>
-                )}
 
                 <p>
                     Don't have an account?{" "}

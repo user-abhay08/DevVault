@@ -156,6 +156,7 @@ function ProjectAnalysis() {
 
                     </div>
 
+
                     <div className="analysis-actions">
 
                         <Link
@@ -164,6 +165,15 @@ function ProjectAnalysis() {
                         >
                             ← Project
                         </Link>
+
+
+                        <Link
+                            to={`/project/${id}/code-review`}
+                            className="secondary-button"
+                        >
+                            AI Code Review
+                        </Link>
+
 
                         <button
                             onClick={generateAnalysis}
@@ -289,6 +299,7 @@ function ProjectAnalysis() {
                                     </div>
 
                                 </div>
+
 
                                 <div className="score-description">
 
@@ -561,18 +572,18 @@ function ProjectAnalysis() {
                                 status?.updated_at
                             ) && (
 
-                                <p className="timestamp">
+                                    <p className="timestamp">
 
-                                    Last analyzed:{" "}
+                                        Last analyzed:{" "}
 
-                                    {new Date(
-                                        status.updatedAt ||
-                                        status.updated_at
-                                    ).toLocaleString()}
+                                        {new Date(
+                                            status.updatedAt ||
+                                            status.updated_at
+                                        ).toLocaleString()}
 
-                                </p>
+                                    </p>
 
-                            )}
+                                )}
 
                         </div>
                     )}

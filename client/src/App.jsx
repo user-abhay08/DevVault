@@ -1,40 +1,21 @@
-import {
-    BrowserRouter,
-    Routes,
-    Route
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProjectAnalysis from "./pages/ProjectAnalysis";
+import ProjectCodeReview from "./pages/ProjectCodeReview";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
-
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-
     return (
         <BrowserRouter>
-
             <Routes>
-
-                {/* Public */}
-
-                <Route
-                    path="/"
-                    element={<Login />}
-                />
-
-                <Route
-                    path="/register"
-                    element={<Register />}
-                />
-
-
-                {/* Protected */}
+                <Route path="/" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 <Route
                     path="/dashboard"
@@ -64,6 +45,15 @@ function App() {
                 />
 
                 <Route
+                    path="/project/:id/code-review"
+                    element={
+                        <ProtectedRoute>
+                            <ProjectCodeReview />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
                     path="/profile"
                     element={
                         <ProtectedRoute>
@@ -72,16 +62,8 @@ function App() {
                     }
                 />
 
-
-                {/* 404 */}
-
-                <Route
-                    path="*"
-                    element={<NotFound />}
-                />
-
+                <Route path="*" element={<NotFound />} />
             </Routes>
-
         </BrowserRouter>
     );
 }

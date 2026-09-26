@@ -6,7 +6,7 @@ const apiBaseUrl = configuredApiUrl
     ? configuredApiUrl.endsWith("/api")
         ? configuredApiUrl
         : `${configuredApiUrl}/api`
-    : "https://devvault-api-3dle.onrender.com/api";
+    : "http://localhost:5000/api";
 
 const api = axios.create({
     baseURL: apiBaseUrl,
@@ -15,7 +15,6 @@ const api = axios.create({
     }
 });
 
-// Attach JWT automatically
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -26,15 +25,11 @@ api.interceptors.request.use(
 
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Handle authentication failures
 api.interceptors.response.use(
     (response) => response,
-
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem("token");
