@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import api from "../services/api";
 
 function Register() {
@@ -13,6 +12,7 @@ function Register() {
 
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = async (event) => {
 
@@ -23,7 +23,6 @@ function Register() {
 
         try {
 
-            // 1. Create account
             await api.post(
                 "/auth/register",
                 {
@@ -33,7 +32,6 @@ function Register() {
                 }
             );
 
-            // 2. Automatically login
             const loginResponse = await api.post(
                 "/auth/login",
                 {
@@ -42,27 +40,28 @@ function Register() {
                 }
             );
 
-            // 3. Save JWT
             localStorage.setItem(
                 "token",
                 loginResponse.data.token
             );
 
-            // 4. Go directly to dashboard
             navigate("/dashboard", {
                 replace: true
             });
 
         } catch (error) {
 
+            console.error("REGISTER ERROR:", error);
+
             setMessage(
                 error.response?.data?.message ||
-                "Registration failed."
+                "Unable to create your account."
             );
 
         } finally {
 
             setLoading(false);
+
         }
     };
 
@@ -71,98 +70,156 @@ function Register() {
 
             <div className="auth-card">
 
-                <div className="auth-brand">
+                {/* Brand */}
+                <div className="auth-logo-wrapper">
+                    <img
+                        src="/logo.png"
+                        alt="DevVault AI"
+                        className="auth-logo"
+                    />
+                </div>
 
-                    <div className="brand-icon">
-                        DV
-                    </div>
+                <div className="auth-heading">
 
-                    <h1>
-                        Create Account
-                    </h1>
+                    <h1>Create your account</h1>
+
+                    <p>
+                        Build your developer profile and start analyzing projects
+                    </p>
 
                 </div>
 
-                <p className="subtitle">
-                    Start analyzing your developer projects
-                </p>
+                {/* Form */}
+                <form
+                    onSubmit={handleRegister}
+                    className="auth-form"
+                >
 
-                <form onSubmit={handleRegister}>
+                    <div className="form-group">
 
-                    <label htmlFor="name">
-                        Name
-                    </label>
+                        <label htmlFor="register-name">
+                            Full name
+                        </label>
 
-                    <input
-                        id="name"
-                        type="text"
-                        placeholder="Your name"
-                        value={name}
-                        onChange={(event) =>
-                            setName(event.target.value)
-                        }
-                        autoComplete="name"
-                        required
-                    />
+                        <input
+                            id="register-name"
+                            type="text"
+                            placeholder="Abhay Patil"
+                            value={name}
+                            onChange={(event) =>
+                                setName(event.target.value)
+                            }
+                            autoComplete="name"
+                            required
+                        />
 
-                    <label htmlFor="register-email">
-                        Email
-                    </label>
+                    </div>
 
-                    <input
-                        id="register-email"
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
-                        }
-                        autoComplete="email"
-                        required
-                    />
+                    <div className="form-group">
 
-                    <label htmlFor="register-password">
-                        Password
-                    </label>
+                        <label htmlFor="register-email">
+                            Email address
+                        </label>
 
-                    <input
-                        id="register-password"
-                        type="password"
-                        placeholder="Create a password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
-                        }
-                        autoComplete="new-password"
-                        required
-                    />
+                        <input
+                            id="register-email"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
+                            autoComplete="email"
+                            required
+                        />
+
+                    </div>
+
+                    <div className="form-group">
+
+                        <label htmlFor="register-password">
+                            Password
+                        </label>
+
+                        <div className="password-input-wrapper">
+
+                            <input
+                                id="register-password"
+                                type={
+                                    showPassword
+                                        ? "text"
+                                        : "password"
+                                }
+                                placeholder="Create a password"
+                                value={password}
+                                onChange={(event) =>
+                                    setPassword(event.target.value)
+                                }
+                                autoComplete="new-password"
+                                required
+                            />
+
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() =>
+                                    setShowPassword(!showPassword)
+                                }
+                                aria-label={
+                                    showPassword
+                                        ? "Hide password"
+                                        : "Show password"
+                                }
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+
+                        </div>
+
+                        <span className="input-hint">
+                            Use a strong password to protect your account.
+                        </span>
+
+                    </div>
+
+                    {message && (
+                        <div className="auth-error">
+                            <span className="auth-error-icon">!</span>
+                            <span>{message}</span>
+                        </div>
+                    )}
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="primary-button full-width"
+                        className="auth-submit-button"
                     >
-                        {loading
-                            ? "Creating account..."
-                            : "Create Account"}
+                        {loading ? (
+                            <>
+                                <span className="button-spinner"></span>
+                                Creating account...
+                            </>
+                        ) : (
+                            "Create account"
+                        )}
                     </button>
 
                 </form>
 
-                {message && (
-                    <div className="error-message">
-                        {message}
-                    </div>
-                )}
+                {/* Login */}
+                <div className="auth-divider">
+                    <span>Already have an account?</span>
+                </div>
 
-                <p className="auth-footer">
+                <Link
+                    to="/"
+                    className="auth-secondary-button"
+                >
+                    Sign in
+                </Link>
 
-                    Already have an account?{" "}
-
-                    <Link to="/">
-                        Sign in
-                    </Link>
-
+                <p className="auth-trust-text">
+                    Developer intelligence powered by AI
                 </p>
 
             </div>

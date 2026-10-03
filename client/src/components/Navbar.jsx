@@ -33,8 +33,12 @@ function Navbar() {
     return (
         <nav className="navbar">
 
-            <Link to="/dashboard" className="logo">
-                <span className="logo-mark">D</span>
+            <Link to="/dashboard" className="navbar-brand">
+                <img
+                    src="/logo.png"
+                    alt="DevVault AI"
+                    className="navbar-logo"
+                />
                 <span>DevVault AI</span>
             </Link>
 

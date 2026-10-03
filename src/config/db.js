@@ -1,4 +1,9 @@
 const mysql = require("mysql2/promise");
+const express = require("express");
+const router = express.Router();
+
+const db = require("../config/db");
+const authMiddleware = require("../middleware/auth.middleware");
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,

@@ -9,6 +9,7 @@ function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -29,14 +30,11 @@ function Login() {
             });
 
         } catch (error) {
-    console.error("LOGIN ERROR:", error);
-    console.error("STATUS:", error.response?.status);
-    console.error("DATA:", error.response?.data);
-    console.error("MESSAGE:", error.message);
+            console.error("LOGIN ERROR:", error);
 
             setError(
                 error.response?.data?.message ||
-                "Login failed"
+                "Unable to sign in. Please check your credentials."
             );
         } finally {
             setLoading(false);
@@ -48,54 +46,127 @@ function Login() {
 
             <div className="auth-card">
 
-                <h1>DevVault AI</h1>
-
-                <p className="auth-subtitle">
-                    AI-powered developer project intelligence
-                </p>
-
-                <form onSubmit={handleLogin}>
-
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
-                        }
-                        required
+                {/* Brand */}
+                <div className="auth-logo-wrapper">
+                    <img
+                        src="/logo.png"
+                        alt="DevVault AI"
+                        className="auth-logo"
                     />
+                </div>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
-                        }
-                        required
-                    />
+                <div className="auth-heading">
+                    <h1>Welcome back</h1>
+
+                    <p>
+                        Sign in to continue to your developer workspace
+                    </p>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleLogin} className="auth-form">
+
+                    <div className="form-group">
+
+                        <label htmlFor="login-email">
+                            Email address
+                        </label>
+
+                        <input
+                            id="login-email"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
+                            autoComplete="email"
+                            required
+                        />
+
+                    </div>
+
+                    <div className="form-group">
+
+                        <div className="password-label-row">
+
+                            <label htmlFor="login-password">
+                                Password
+                            </label>
+
+                        </div>
+
+                        <div className="password-input-wrapper">
+
+                            <input
+                                id="login-password"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(event) =>
+                                    setPassword(event.target.value)
+                                }
+                                autoComplete="current-password"
+                                required
+                            />
+
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() =>
+                                    setShowPassword(!showPassword)
+                                }
+                                aria-label={
+                                    showPassword
+                                        ? "Hide password"
+                                        : "Show password"
+                                }
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+
+                        </div>
+
+                    </div>
 
                     {error && (
-                        <p className="error-message">
-                            {error}
-                        </p>
+                        <div className="auth-error">
+                            <span className="auth-error-icon">!</span>
+                            <span>{error}</span>
+                        </div>
                     )}
 
                     <button
                         type="submit"
                         disabled={loading}
+                        className="auth-submit-button"
                     >
-                        {loading ? "Logging in..." : "Login"}
+                        {loading ? (
+                            <>
+                                <span className="button-spinner"></span>
+                                Signing in...
+                            </>
+                        ) : (
+                            "Sign in"
+                        )}
                     </button>
 
                 </form>
 
-                <p>
-                    Don't have an account?{" "}
-                    <Link to="/register">
-                        Register
-                    </Link>
+                {/* Register */}
+                <div className="auth-divider">
+                    <span>New to DevVault?</span>
+                </div>
+
+                <Link
+                    to="/register"
+                    className="auth-secondary-button"
+                >
+                    Create an account
+                </Link>
+
+                <p className="auth-trust-text">
+                    Analyze projects • Review code • Improve faster
                 </p>
 
             </div>
