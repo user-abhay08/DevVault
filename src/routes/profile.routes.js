@@ -100,46 +100,79 @@ router.post("/", authenticateToken, async (req, res) => {
     }
 });
 
-// PUT ROUTE
-router.put("/", authenticateToken, async(req,res)=>{
-    try{
+
+// PUT ROUTE — Update existing profile
+router.put("/", authenticateToken, async (req, res) => {
+    try {
         const userId = req.user.userId;
-        const{
+
+        const {
             bio,
             skills,
             github_url,
             linkedin_url,
             portfolio_url
         } = req.body;
-        const [result] = await pool.query(
-            `UPDATE profiles
-            SET bio = ?,
-            skills = ?,
-            github_url = ?,
-            linkedin_url = ?,
-            portfolio_url = ?
-            WHERE user_id = ?`,
-        [
-            bio || null,
-            skills || null,
-            github_url || null,
-            linkedin_url || null,
-            portfolio_url || null,
-            userId
-        ]
-    );
-        if(result.affectedRows === 0){
-            return res.status(404).json({
-                message:"Profile not found"
+
+        // Validate URLs
+        if (github_url && !github_url.startsWith("https://")) {
+            return res.status(400).json({
+                message: "GitHub URL must start with https://"
             });
         }
-        res.json({
-            message:"Profile updated successfully"
+
+        if (linkedin_url && !linkedin_url.startsWith("https://")) {
+            return res.status(400).json({
+                message: "LinkedIn URL must start with https://"
+            });
+        }
+
+        if (portfolio_url && !portfolio_url.startsWith("https://")) {
+            return res.status(400).json({
+                message: "Portfolio URL must start with https://"
+            });
+        }
+
+        // Check existence instead of relying on affectedRows
+        const [profiles] = await pool.query(
+            "SELECT id FROM profiles WHERE user_id = ?",
+            [userId]
+        );
+
+        if (profiles.length === 0) {
+            return res.status(404).json({
+                message: "Profile not found. Create it using POST first."
+            });
+        }
+
+        // Update the existing profile
+        await pool.query(
+            `UPDATE profiles
+             SET bio = ?,
+                 skills = ?,
+                 github_url = ?,
+                 linkedin_url = ?,
+                 portfolio_url = ?
+             WHERE user_id = ?`,
+            [
+                bio || null,
+                skills || null,
+                github_url || null,
+                linkedin_url || null,
+                portfolio_url || null,
+                userId
+            ]
+        );
+
+        return res.status(200).json({
+            message: "Profile updated successfully"
         });
-    } catch(error){
-        console.log("UPDATE PROFILE ERROR",error);
-        res.status(500).json({
-            message:"Internal server error"
+
+    } catch (error) {
+        console.error("UPDATE PROFILE ERROR:", error);
+
+        return res.status(500).json({
+            message: "Internal server error"
         });
     }
 });
