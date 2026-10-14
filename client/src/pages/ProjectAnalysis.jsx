@@ -10,11 +10,17 @@ function ProjectAnalysis() {
 
     const [analysis, setAnalysis] = useState(null);
     const [status, setStatus] = useState(null);
+    const [projectTitle, setProjectTitle] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
 
     const [message, setMessage] = useState("");
+    const rawScore = Number(analysis?.projectScore);
+    const scoreValue = analysis?.projectScore !== null && analysis?.projectScore !== undefined && Number.isFinite(rawScore) && rawScore >= 0 && rawScore <= 100
+        ? rawScore
+        : null;
+    const lastUpdatedAt = analysis?.updatedAt || status?.updatedAt || status?.updated_at;
 
 
     const fetchAnalysis = async () => {
@@ -62,9 +68,28 @@ function ProjectAnalysis() {
 
 
     useEffect(() => {
-
-        fetchAnalysis();
-
+        let active = true;
+        api.get(`/projects/${id}`).then((response) => {
+            if (active) setProjectTitle((response.data.project || response.data).title || "");
+        }).catch(() => { if (active) setProjectTitle(""); });
+        (async () => {
+            try {
+                const statusResponse = await api.get(`/ai/project/${id}/analysis/status`);
+                if (!active) return;
+                setStatus(statusResponse.data);
+                if (statusResponse.data.analysisAvailable) {
+                    const response = await api.get(`/ai/project/${id}/analysis`);
+                    if (active) setAnalysis(response.data.analysis || response.data);
+                } else if (active) {
+                    setAnalysis(null);
+                }
+            } catch (error) {
+                if (active) setMessage(error.response?.data?.message || "Failed to load AI analysis.");
+            } finally {
+                if (active) setLoading(false);
+            }
+        })();
+        return () => { active = false; };
     }, [id]);
 
 
@@ -142,7 +167,7 @@ function ProjectAnalysis() {
                     <div>
 
                         <p className="eyebrow">
-                            PROJECT #{id}
+                            {projectTitle ? `PROJECTS / ${projectTitle} / AI ANALYSIS` : `PROJECT #${id}`}
                         </p>
 
                         <h1>
@@ -181,10 +206,10 @@ function ProjectAnalysis() {
                             className="primary-button"
                         >
                             {generating
-                                ? "Analyzing..."
+                                ? "Running analysis…"
                                 : analysis
-                                    ? "Refresh Analysis"
-                                    : "Generate Analysis"}
+                                    ? "Run new analysis"
+                                    : "Run analysis"}
                         </button>
 
                     </div>
@@ -261,7 +286,7 @@ function ProjectAnalysis() {
                                 onClick={generateAnalysis}
                                 className="primary-button"
                             >
-                                Generate AI Analysis
+                                Run analysis
                             </button>
 
                         </div>
@@ -286,17 +311,8 @@ function ProjectAnalysis() {
                                         OVERALL PROJECT SCORE
                                     </p>
 
-                                    <div>
-
-                                        <strong>
-                                            {analysis.projectScore ?? 0}
-                                        </strong>
-
-                                        <span>
-                                            /100
-                                        </span>
-
-                                    </div>
+                                    {scoreValue !== null ? <div className="score-ring" role="meter" aria-label="Project assessment score" aria-valuemin="0" aria-valuemax="100" aria-valuenow={scoreValue} style={{ "--score": `${scoreValue}%` }}><div><strong>{scoreValue}</strong><span>/100</span></div></div> : <div className="score-unavailable"><strong>—</strong><span>/100</span></div>}
+                                    <span className="score-scale">Scale: 0–100</span>
 
                                 </div>
 
@@ -399,7 +415,7 @@ function ProjectAnalysis() {
 
                             <div className="analysis-grid">
 
-                                <section className="analysis-card">
+                                <section className="analysis-card finding-positive">
 
                                     <div className="analysis-card-title">
 
@@ -438,7 +454,7 @@ function ProjectAnalysis() {
                                 </section>
 
 
-                                <section className="analysis-card">
+                                <section className="analysis-card finding-risk">
 
                                     <div className="analysis-card-title">
 
@@ -567,19 +583,13 @@ function ProjectAnalysis() {
 
                             {/* Timestamp */}
 
-                            {(
-                                status?.updatedAt ||
-                                status?.updated_at
-                            ) && (
+                            {lastUpdatedAt && (
 
                                     <p className="timestamp">
 
                                         Last analyzed:{" "}
 
-                                        {new Date(
-                                            status.updatedAt ||
-                                            status.updated_at
-                                        ).toLocaleString()}
+                                        {new Date(lastUpdatedAt).toLocaleString()}
 
                                     </p>
 

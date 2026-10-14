@@ -2,6 +2,10 @@ const express = require('express');
 const authenticateToken = require('../middleware/auth.middleware');
 const pool = require('../config/db');
 const router = express.Router();
+const validWebUrl = (value) => {
+    if (!value) return true;
+    try { return new URL(value).protocol === "https:"; } catch { return false; }
+};
 
 // GET ROUTE
 router.get("/me", authenticateToken, async(req,res)=>{
@@ -41,6 +45,9 @@ router.post("/", authenticateToken, async (req, res) => {
             linkedin_url,
             portfolio_url
         } = req.body;
+        if (![github_url, linkedin_url, portfolio_url].every(validWebUrl)) {
+            return res.status(400).json({ message: "Profile links must be valid HTTPS URLs" });
+        }
         if(github_url && !github_url.startsWith("https://")){
             return res.status(400).json({
                 message:"Github URL must start with https://"
@@ -111,6 +118,18 @@ router.put("/", authenticateToken, async(req,res)=>{
             linkedin_url,
             portfolio_url
         } = req.body;
+        if (![github_url, linkedin_url, portfolio_url].every(validWebUrl)) {
+            return res.status(400).json({ message: "Profile links must be valid HTTPS URLs" });
+        }
+        const [existing] = await pool.query("SELECT id FROM profiles WHERE user_id = ?", [userId]);
+        if (existing.length === 0) {
+            await pool.query(
+                `INSERT INTO profiles (user_id, bio, skills, github_url, linkedin_url, portfolio_url)
+                 VALUES (?, ?, ?, ?, ?, ?)`,
+                [userId, bio || null, skills || null, github_url || null, linkedin_url || null, portfolio_url || null]
+            );
+            return res.status(201).json({ message: "Profile created successfully" });
+        }
         const [result] = await pool.query(
             `UPDATE profiles
             SET bio = ?,

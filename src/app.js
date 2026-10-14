@@ -12,20 +12,24 @@ const aiRoutes = require("./routes/ai.routes");
 const app = express();
 
 
-// CORS
+const allowedOrigins = new Set([
+    "http://localhost:5173",
+    "https://devvault-orpin-nu.vercel.app"
+]);
+if (process.env.CLIENT_URL) {
+    try { allowedOrigins.add(new URL(process.env.CLIENT_URL).origin); } catch { /* invalid deployment URL is ignored */ }
+}
 
 app.use(
     cors({
-        origin: [
-            "http://localhost:5173",
-            "https://devvault-orpin-nu.vercel.app"
-        ],
+        origin: [...allowedOrigins],
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"]
     })
 );
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false, limit: "2kb" }));
 
 
 // HEALTH CHECK

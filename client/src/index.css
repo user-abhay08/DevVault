@@ -212,7 +212,7 @@ p {
             var(--primary-dark)
         );
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 
     box-shadow:
@@ -275,7 +275,7 @@ p {
 
     background: var(--surface-solid);
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 
     box-shadow: var(--shadow-sm);
@@ -341,7 +341,7 @@ p {
 
     color: var(--text);
 
-    font-size: 20px;
+    font-size: 23px;
     font-weight: 850;
 
     letter-spacing: -0.045em;
@@ -371,7 +371,7 @@ p {
             #06b6d4
         );
 
-    font-size: 13px;
+    font-size: 16px;
 
     box-shadow:
         0 7px 22px rgba(99, 102, 241, 0.27);
@@ -400,7 +400,7 @@ p {
 
     color: var(--text-secondary);
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
 
     transition:
@@ -470,7 +470,7 @@ p {
 
     background: var(--surface-solid);
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
 
     transition:
@@ -588,7 +588,7 @@ p {
 
     color: var(--text);
 
-    font-size: 27px;
+    font-size: 30px;
     letter-spacing: -0.045em;
 }
 
@@ -611,7 +611,7 @@ p {
             #8b5cf6
         );
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 900;
 
     box-shadow:
@@ -623,7 +623,7 @@ p {
 
     color: var(--text-secondary);
 
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .auth-card form {
@@ -638,7 +638,7 @@ p {
 
     color: var(--text);
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -657,7 +657,7 @@ textarea {
 
     background: var(--surface-solid);
 
-    font-size: 14px;
+    font-size: 17px;
 
     transition:
         border-color 0.2s ease,
@@ -694,7 +694,7 @@ textarea {
 
     color: var(--text-secondary);
 
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .auth-footer a {
@@ -722,7 +722,7 @@ textarea {
     background:
         rgba(254,242,242,0.85);
 
-    font-size: 13px;
+    font-size: 16px;
 
     animation:
         shake 0.35s ease;
@@ -755,7 +755,7 @@ textarea {
 
     color: var(--primary);
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 850;
 
     letter-spacing: 1.5px;
@@ -921,7 +921,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: clamp(32px, 4vw, 40px);
+    font-size: clamp(35px, 4vw, 43px);
 
     letter-spacing: -0.055em;
     line-height: 1.08;
@@ -932,7 +932,7 @@ textarea {
 
     color: var(--text-secondary);
 
-    font-size: 14px;
+    font-size: 17px;
 }
 
 /* =========================================================
@@ -1007,14 +1007,14 @@ textarea {
 
     color: var(--text-secondary);
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 600;
 }
 
 .stat-card strong {
     color: var(--text);
 
-    font-size: 25px;
+    font-size: 28px;
 
     letter-spacing: -0.04em;
 }
@@ -1042,7 +1042,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 21px;
+    font-size: 23.5px;
 
     letter-spacing: -0.035em;
 }
@@ -1052,7 +1052,7 @@ textarea {
 
     color: var(--text-secondary);
 
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .project-grid {
@@ -1193,7 +1193,7 @@ textarea {
             #8b5cf6
         );
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 900;
 
     box-shadow:
@@ -1212,7 +1212,7 @@ textarea {
 .project-number {
     color: var(--text-muted);
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
 }
 
@@ -1221,7 +1221,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 19px;
+    font-size: 22px;
 
     letter-spacing: -0.035em;
 }
@@ -1233,7 +1233,7 @@ textarea {
 
     color: var(--text-secondary);
 
-    font-size: 13px;
+    font-size: 16px;
 
     line-height: 1.7;
 }
@@ -1276,7 +1276,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 35px;
+    font-size: 38px;
 
     letter-spacing: -0.055em;
 }
@@ -1312,7 +1312,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 20px;
+    font-size: 23px;
 
     letter-spacing: -0.03em;
 }
@@ -1355,14 +1355,14 @@ textarea {
 
     color: var(--text-muted);
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
 }
 
 .details-list strong {
     color: var(--text);
 
-    font-size: 14px;
+    font-size: 17px;
 }
 
 /* =========================================================
@@ -1402,7 +1402,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 20px;
+    font-size: 23px;
 }
 
 .github-repository p:not(.eyebrow) {
@@ -1453,13 +1453,13 @@ textarea {
 
     color: var(--text-muted);
 
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .github-stat strong {
     color: var(--text);
 
-    font-size: 22px;
+    font-size: 24.6px;
 
     letter-spacing: -0.035em;
 }
@@ -1492,7 +1492,7 @@ textarea {
     background:
         rgba(99,102,241,0.07);
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 650;
 
     transition:
@@ -1585,7 +1585,7 @@ textarea {
 
     margin: 5px 0 8px;
 
-    font-size: 23px;
+    font-size: 25.8px;
 
     letter-spacing: -0.035em;
 }
@@ -1630,7 +1630,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 35px;
+    font-size: 38px;
 
     letter-spacing: -0.055em;
 }
@@ -1720,7 +1720,7 @@ textarea {
 
     color: #a1a1aa;
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 800;
 
     letter-spacing: 1.4px;
@@ -1729,7 +1729,7 @@ textarea {
 }
 
 .score-main strong {
-    font-size: 68px;
+    font-size: 71px;
 
     line-height: 1;
 
@@ -1754,7 +1754,7 @@ textarea {
 
     color: #71717a;
 
-    font-size: 20px;
+    font-size: 23px;
 }
 
 .score-description {
@@ -1764,7 +1764,7 @@ textarea {
 .score-description h3 {
     margin: 0 0 8px;
 
-    font-size: 19px;
+    font-size: 22px;
 
     letter-spacing: -0.025em;
 }
@@ -1827,7 +1827,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 20px;
+    font-size: 23px;
 
     letter-spacing: -0.035em;
 }
@@ -1853,7 +1853,7 @@ textarea {
             #e0e7ff
         );
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 900;
 }
 
@@ -2043,7 +2043,7 @@ textarea {
 
     color: var(--text-muted);
 
-    font-size: 11px;
+    font-size: 14px;
 
     text-align: right;
 }
@@ -2072,7 +2072,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 34px;
+    font-size: 37px;
 
     letter-spacing: -0.055em;
 }
@@ -2113,7 +2113,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 19px;
+    font-size: 22px;
 
     letter-spacing: -0.03em;
 }
@@ -2125,7 +2125,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
 }
 
@@ -2153,7 +2153,7 @@ textarea {
 .not-found-code {
     color: var(--primary);
 
-    font-size: 90px;
+    font-size: 93px;
 
     font-weight: 900;
 
@@ -2387,7 +2387,7 @@ textarea {
     }
 
     .logo {
-        font-size: 17px;
+        font-size: 20px;
     }
 
     .logo::before {
@@ -2398,22 +2398,22 @@ textarea {
     .logout-button {
         padding: 7px 9px;
 
-        font-size: 11px;
+        font-size: 14px;
     }
 
     .nav-link {
-        font-size: 11px;
+        font-size: 14px;
     }
 
     .dashboard-header h1,
     .project-details-header h1,
     .analysis-header h1,
     .profile-header h1 {
-        font-size: 28px;
+        font-size: 31px;
     }
 
     .score-main strong {
-        font-size: 55px;
+        font-size: 58px;
     }
 
     .project-grid {
@@ -2460,7 +2460,7 @@ textarea {
 
 .page-header h1 {
     margin: 10px 0 8px;
-    font-size: 32px;
+    font-size: 35px;
 }
 
 .page-header p {
@@ -2471,7 +2471,7 @@ textarea {
 .back-link {
     color: #64748b;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .back-link:hover {
@@ -2482,7 +2482,7 @@ textarea {
     border: none;
     border-radius: 10px;
     padding: 12px 18px;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
     background: #111827;
@@ -2561,20 +2561,20 @@ textarea {
 .section-label {
     margin: 0 0 8px;
     color: #64748b;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .review-score {
-    font-size: 58px;
+    font-size: 61px;
     line-height: 1;
     font-weight: 800;
 }
 
 .review-score span {
-    font-size: 20px;
+    font-size: 23px;
     color: #94a3b8;
     font-weight: 500;
 }
@@ -2601,7 +2601,7 @@ textarea {
 
 .review-card h2 {
     margin: 0 0 20px;
-    font-size: 20px;
+    font-size: 23px;
 }
 
 .finding-list {
@@ -2627,7 +2627,7 @@ textarea {
     height: 26px;
     border-radius: 50%;
     background: #e2e8f0;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
 }
 
@@ -2656,7 +2656,7 @@ textarea {
 }
 
 .review-card-header span {
-    font-size: 13px;
+    font-size: 16px;
     color: #64748b;
 }
 
@@ -2677,7 +2677,7 @@ textarea {
 }
 
 .file-item code {
-    font-size: 13px;
+    font-size: 16px;
     color: #334155;
     word-break: break-all;
 }
@@ -2687,7 +2687,7 @@ textarea {
     gap: 24px;
     margin-top: 10px;
     color: #94a3b8;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 /* Mobile */
@@ -2710,7 +2710,7 @@ textarea {
     }
 
     .review-score {
-        font-size: 48px;
+        font-size: 51px;
     }
 
     .review-meta {
@@ -2781,7 +2781,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 28px;
+    font-size: 31px;
     font-weight: 800;
 
     letter-spacing: -0.045em;
@@ -2792,7 +2792,7 @@ textarea {
 
     color: var(--text-secondary);
 
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.6;
 }
 
@@ -2815,7 +2815,7 @@ textarea {
 
     color: var(--text);
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -2832,7 +2832,7 @@ textarea {
     color: var(--text);
     background: var(--surface-solid);
 
-    font-size: 14px;
+    font-size: 17px;
 
     transition:
         border-color 0.2s ease,
@@ -2891,7 +2891,7 @@ textarea {
 
     background: transparent;
 
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 750;
 }
 
@@ -2904,7 +2904,7 @@ textarea {
 
     color: var(--text-muted);
 
-    font-size: 11px;
+    font-size: 14px;
 }
 
 /* Submit button */
@@ -2934,7 +2934,7 @@ textarea {
             #7c3aed
         );
 
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 750;
 
     box-shadow:
@@ -3000,7 +3000,7 @@ textarea {
 
     background: rgba(254, 242, 242, 0.85);
 
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.5;
 }
 
@@ -3020,7 +3020,7 @@ textarea {
 
     background: #ef4444;
 
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 800;
 }
 
@@ -3041,7 +3041,7 @@ textarea {
 
     color: var(--text-muted);
 
-    font-size: 11px;
+    font-size: 14px;
 }
 
 .auth-divider::before,
@@ -3072,7 +3072,7 @@ textarea {
 
     background: var(--surface-solid);
 
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
 
     transition:
@@ -3103,7 +3103,7 @@ textarea {
 
     color: var(--text-muted);
 
-    font-size: 10px;
+    font-size: 13px;
 
     letter-spacing: 0.02em;
 }
@@ -3124,7 +3124,7 @@ textarea {
     }
 
     .auth-heading h1 {
-        font-size: 25px;
+        font-size: 28px;
     }
 
     .auth-heading {

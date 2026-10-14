@@ -8,14 +8,18 @@ import ProjectAnalysis from "./pages/ProjectAnalysis";
 import ProjectCodeReview from "./pages/ProjectCodeReview";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import GitHubOAuthCallback from "./pages/GitHubOAuthCallback";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 function App() {
     return (
+        <ThemeProvider>
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/oauth/callback" element={<GitHubOAuthCallback />} />
 
                 <Route
                     path="/dashboard"
@@ -65,6 +69,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
+        </ThemeProvider>
     );
 }
 

@@ -1,8 +1,14 @@
 const express = require("express");
 const authenticateToken = require("../middleware/auth.middleware");
 const pool = require("../config/db");
+const { parseGithubUrl } = require("../services/github.service");
 
 const router = express.Router();
+const validProjectId = (id) => /^[1-9]\d*$/.test(id);
+const validHttpsUrl = (value) => {
+    if (!value) return true;
+    try { return new URL(value).protocol === "https:"; } catch { return false; }
+};
 
 
 // GET /api/projects/test
@@ -40,7 +46,7 @@ router.get("/:id", authenticateToken, async (req, res) => {
 
     const projectId = req.params.id;
     const userId = req.user.userId;
-    if(!Number.isInteger(Number(projectId))){
+    if(!validProjectId(projectId)){
         return res.status(400).json({
             message:"Project ID must be a number"
         });
@@ -76,17 +82,17 @@ router.post("/", authenticateToken, async (req, res) => {
     } = req.body;
 
     // Validate title
-    if (!title || title.trim().length < 3) {
+    if (typeof title !== "string" || title.trim().length < 3) {
         return res.status(400).json({
             message: "Title must be at least 3 characters"
         });
     }
-    if(github_url && !github_url.startsWith("https://")){
-        return res.status(400).json({
-            message:"GitHub URL must start with https://"
-        });
+    if (github_url) {
+        try { parseGithubUrl(github_url); } catch {
+            return res.status(400).json({ message: "Enter a valid GitHub repository URL, such as https://github.com/owner/repository" });
+        }
     }
-    if(live_url && !live_url.startsWith("https://")){
+    if(!validHttpsUrl(live_url)){
         return res.status(400).json({
             message:"Live URL must start with https://"
         });
@@ -121,7 +127,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
 
     const projectId = req.params.id;
     const userId = req.user.userId;
-    if(!Number.isInteger(Number(projectId))){
+    if(!validProjectId(projectId)){
         return res.status(400).json({
             message:"Project ID must be a number"
         });
@@ -134,18 +140,18 @@ router.put("/:id", authenticateToken, async (req, res) => {
     } = req.body;
 
     // Validate title
-    if (!title || title.trim().length < 3) {
+    if (typeof title !== "string" || title.trim().length < 3) {
         return res.status(400).json({
             message: "Title must be at least 3 characters"
         });
     }
-    if (github_url && !github_url.startsWith("https://")) {
-        return res.status(400).json({
-        message: "GitHub URL must start with https://"
-        });
+    if (github_url) {
+        try { parseGithubUrl(github_url); } catch {
+            return res.status(400).json({ message: "Enter a valid GitHub repository URL, such as https://github.com/owner/repository" });
+        }
     }
 
-    if (live_url && !live_url.startsWith("https://")) {
+    if (live_url && !validHttpsUrl(live_url)) {
         return res.status(400).json({
         message: "Live URL must start with https://"
         });
@@ -184,7 +190,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 
     const projectId = req.params.id;
     const userId = req.user.userId;
-    if(!Number.isInteger(Number(projectId))){
+    if(!validProjectId(projectId)){
         return res.status(400).json({
             message:"Project ID must be a number"
         });

@@ -1,7 +1,10 @@
 const errorHandler = (err,req,res,next) =>{
-    console.error(err.stack);
+    console.error("Unhandled API error:", err.code || err.name || "Error", err.message);
 
-    res.status(500).json({
+    const status = Number.isInteger(err.status) && err.status >= 400 && err.status < 600
+        ? err.status
+        : 500;
+    res.status(status).json({
         message: "Internal server error"
     });
 };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import api from "../services/api";
 import Navbar from "../components/Navbar";
+import getCurrentUser from "../services/currentUser";
 
 function Profile() {
 
@@ -12,6 +13,7 @@ function Profile() {
         linkedin_url: "",
         portfolio_url: ""
     });
+    const [user, setUser] = useState(null);
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -21,6 +23,7 @@ function Profile() {
 
 
     useEffect(() => {
+        getCurrentUser().then(setUser);
 
         const fetchProfile = async () => {
 
@@ -144,28 +147,25 @@ function Profile() {
 
             <main className="profile-page">
 
-                <section className="profile-header">
-
-                    <p className="eyebrow">
-                        DEVELOPER PROFILE
-                    </p>
-
-                    <h1>
-                        Your Profile
-                    </h1>
-
-                    <p>
-                        Keep your developer information and
-                        portfolio links up to date.
-                    </p>
-
+                <section className="profile-header profile-heading-row">
+                    <div>
+                        <p className="eyebrow">DEVELOPER PROFILE</p>
+                        <h1>Profile</h1>
+                        <p>Manage your profile information and preferences.</p>
+                    </div>
+                    <button form="profile-form" type="submit" disabled={saving} className="primary-button">{saving ? "Saving…" : "Save changes"}</button>
                 </section>
 
-
                 <form
+                    id="profile-form"
                     className="profile-form"
                     onSubmit={handleSubmit}
                 >
+
+                    <section className="profile-identity-card">
+                        <div className="profile-avatar">{user?.name?.trim()?.[0]?.toUpperCase() || "?"}</div>
+                        <div><h2>{user?.name || "Account information unavailable"}</h2><p>{user?.email || "Your account details could not be loaded."}</p>{user?.role && <span className="profile-role">{user.role}</span>}</div>
+                    </section>
 
                     <div className="profile-section">
 
@@ -272,16 +272,6 @@ function Profile() {
                         </div>
                     )}
 
-
-                    <button
-                        type="submit"
-                        disabled={saving}
-                        className="primary-button"
-                    >
-                        {saving
-                            ? "Saving..."
-                            : "Save Profile"}
-                    </button>
 
                 </form>
 
