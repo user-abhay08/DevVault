@@ -118,6 +118,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     color: var(--primary);
     background: color-mix(in srgb, var(--primary) 8%, var(--surface));
 }
+.brand-mark-image { display: block; width: 30px; height: 30px; object-fit: contain; border-radius: 7px; }
 .brand-name { color: var(--text); font-size: 18px; font-weight: 680; letter-spacing: -.035em; }
 .brand-name span { margin-left: 4px; color: var(--text-muted); font-size: 15px; font-weight: 550; }
 .nav-links { flex: 1; justify-content: space-between; margin-left: 38px; gap: 24px; }

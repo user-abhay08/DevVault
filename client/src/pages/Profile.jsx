@@ -84,8 +84,8 @@ function Profile() {
     };
 
 
-    const handleSubmit = async (event) => {
 
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         setSaving(true);
@@ -93,25 +93,39 @@ function Profile() {
         setError("");
 
         try {
+            let profileExists = true;
 
-            await api.put(
-                "/profile",
-                profile
-            );
+            try {
+                await api.get("/profile/me");
+            } catch (error) {
+                if (error.response?.status === 404) {
+                    profileExists = false;
+                } else {
+                    throw error;
+                }
+            }
 
-            setMessage(
-                "Profile updated successfully."
-            );
+            if (profileExists) {
+                await api.put("/profile", profile);
+            } else {
+                await api.post("/profile", profile);
+            }
+
+            setMessage("Profile saved successfully.");
 
         } catch (error) {
+            console.error("SAVE PROFILE ERROR:", {
+                status: error.response?.status,
+                data: error.response?.data,
+                url: error.config?.url,
+                method: error.config?.method
+            });
 
             setError(
                 error.response?.data?.message ||
-                "Failed to update profile."
+                "Failed to save profile."
             );
-
         } finally {
-
             setSaving(false);
         }
     };

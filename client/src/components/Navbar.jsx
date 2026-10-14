@@ -32,7 +32,7 @@ function Navbar() {
             <header className={`app-nav-wrap${menuOpen ? " is-open" : ""}`}>
                 <nav className="navbar" aria-label="Main navigation">
                     <Link to="/dashboard" className="navbar-brand" onClick={closeMenu}>
-                        <span className="brand-mark"><Icon name="layers" size={20} /></span>
+                        <span className="brand-mark"><img className="brand-mark-image" src="/devvault-nav-mark.png" alt="" /></span>
                         <span className="brand-name">DevVault<span>AI</span></span>
                     </Link>
 
