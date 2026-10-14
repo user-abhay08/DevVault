@@ -226,7 +226,7 @@ function Register() {
                 <div className="auth-divider github-divider"><span>Or create an account with</span></div>
                 <a className="github-auth-button" href={`${api.defaults.baseURL}/auth/github`}>
                     <span className="github-auth-mark" aria-hidden="true">GH</span>
-                    Continue with GitHub
+                    Sign up with GitHub
                 </a>
 
                 {/* Login */}
