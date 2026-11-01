@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
@@ -13,6 +16,8 @@
   "type": "commonjs",
   "dependencies": {
     "@google/genai": "^2.20.0",
+    "@secretlint/node": "^13.1.0",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.1.0",
     "@vercel/analytics": "^2.0.1",
     "axios": "^1.20.0",
     "bcrypt": "^6.0.0",

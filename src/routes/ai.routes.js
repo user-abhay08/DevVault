@@ -412,8 +412,7 @@ router.post("/project/:id/analyze", authenticateToken, async (req, res) => {
         console.error("PROJECT AI ANALYSIS ERROR:", error.message);
 
         res.status(500).json({
-            message: "Failed to analyze project",
-            error: error.message
+            message: "Failed to analyze project"
         });
     }
 });
